@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.Arrays;
 import nextstep.subway.path.domain.policy.ChildrenDiscountPolicy;
 import nextstep.subway.path.domain.policy.DiscountPolicy;
+import nextstep.subway.path.domain.policy.NonDiscountPolicy;
 import nextstep.subway.path.domain.policy.TeenagerDiscountPolicy;
 
 public enum AgeDiscountType {
@@ -20,8 +21,12 @@ public enum AgeDiscountType {
     }
 
     public static DiscountPolicy findDiscountPolicyByAge(int age) {
-        return Arrays.stream(values()).filter(type -> type.containAgeGroup(age)).
-                findFirst().orElse(null).discountPolicy;
+        AgeDiscountType ageDiscountType = Arrays.stream(values()).filter(type -> type.containAgeGroup(age)).
+                findFirst().orElse(null);
+        if (ageDiscountType == null) {
+            return new NonDiscountPolicy();
+        }
+        return ageDiscountType.discountPolicy;
 
     }
 
